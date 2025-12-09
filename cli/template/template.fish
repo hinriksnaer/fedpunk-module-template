@@ -4,9 +4,10 @@
 
 function template-test
     # Get the example_value parameter
-    # This will be set by the parameter injection system
-    if set -q FEDPUNK_PARAM_EXAMPLE_VALUE
-        echo $FEDPUNK_PARAM_EXAMPLE_VALUE
+    # Pattern: FEDPUNK_PARAM_<MODULE>_<PARAM>
+    # Module name is extracted from repo name: fedpunk-module-template -> FEDPUNK_MODULE_TEMPLATE
+    if set -q FEDPUNK_PARAM_FEDPUNK_MODULE_TEMPLATE_EXAMPLE_VALUE
+        echo $FEDPUNK_PARAM_FEDPUNK_MODULE_TEMPLATE_EXAMPLE_VALUE
     else
         echo "Parameter not set. Default: Hello from template plugin!"
     end
