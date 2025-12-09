@@ -1,0 +1,26 @@
+module:
+  name: template
+  description: Template external module demonstrating parameters
+  version: 1.0.0
+
+# Define module parameters
+parameters:
+  example_value:
+    type: string
+    description: Example value to display
+    default: "Hello from template plugin!"
+    required: false
+
+lifecycle:
+  before: []
+  after: []
+
+packages:
+  dnf: []
+  cargo: []
+  npm: []
+
+stow:
+  target: $HOME
+  config_template: true
+  conflicts: warn
