@@ -29,10 +29,10 @@ Add to your profile's mode.yaml:
 ```yaml
 modules:
   # With default parameters
-  - https://github.com/yourusername/fedpunk-module-template.git
+  - https://github.com/hinriksnaer/fedpunk-module-template.git
 
   # With custom parameters
-  - module: https://github.com/yourusername/fedpunk-module-template.git
+  - module: https://github.com/hinriksnaer/fedpunk-module-template.git
     params:
       example_value: "Custom greeting!"
 ```
