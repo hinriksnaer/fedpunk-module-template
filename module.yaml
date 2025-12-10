@@ -2,6 +2,7 @@ module:
   name: template
   description: Template external module demonstrating parameters
   version: 1.0.0
+  dependencies: []  # Optional: List of required modules (e.g., - fish, - rust)
 
 # Define module parameters
 parameters:
@@ -16,9 +17,11 @@ lifecycle:
   after: []
 
 packages:
-  dnf: []
-  cargo: []
-  npm: []
+  copr: []    # Optional: COPR repositories to enable
+  dnf: []     # DNF packages to install
+  cargo: []   # Cargo crates to install
+  npm: []     # NPM packages to install
+  flatpak: [] # Optional: Flatpak applications to install
 
 stow:
   target: $HOME

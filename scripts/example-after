@@ -1,0 +1,23 @@
+#!/usr/bin/env fish
+# Example lifecycle script - runs after config stowing
+# Reference this in module.yaml: lifecycle.after: [example-after]
+
+# Available environment variables:
+# - $FEDPUNK_ROOT: Fedpunk installation directory
+# - $MODULE_NAME: Current module name
+# - $MODULE_DIR: Module directory path
+# - $HOME: User home directory
+
+# Optional: Use fedpunk UI library for consistent output
+source "$FEDPUNK_ROOT/lib/fish/ui.fish"
+
+ui-info "Running post-deployment setup for template module..."
+
+# Your post-deployment logic here
+# Examples:
+# - Configure installed packages
+# - Set up services
+# - Initialize databases
+# - Run migrations
+
+ui-success "Template module setup complete"
