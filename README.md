@@ -47,8 +47,10 @@ modules:
 
 ```bash
 # Display the example_value parameter
-fedpunk template test
+fedpunk template show
 ```
+
+The module uses Fedpunk's auto-discovery CLI pattern, which automatically discovers and lists all available subcommands.
 
 ## Creating Your Own Module
 
@@ -113,6 +115,51 @@ ui-error "Error message"
 ui-warning "Warning message"
 ui-spin --title "Loading..." -- command
 ```
+
+###  CLI Auto-Discovery Pattern
+
+Fedpunk modules can provide CLI commands using an auto-discovery pattern:
+
+```fish
+#!/usr/bin/env fish
+
+# Source CLI dispatch library
+if not functions -q cli-dispatch
+    source "$FEDPUNK_SYSTEM/lib/fish/cli-dispatch.fish"
+end
+
+# Main command function
+function mymodule --description "My module commands"
+    set -l cmd_dir (dirname (status --current-filename))
+    cli-dispatch mymodule $cmd_dir $argv
+end
+
+# Subcommand functions (automatically discovered)
+function subcommand1 --description "First subcommand"
+    if contains -- "$argv[1]" --help -h
+        printf "Help for subcommand1\\n"
+        return 0
+    end
+    # Implementation...
+end
+
+function subcommand2 --description "Second subcommand"
+    if contains -- "$argv[1]" --help -h
+        printf "Help for subcommand2\\n"
+        return 0
+    end
+    # Implementation...
+end
+
+# Execute
+mymodule $argv
+```
+
+The `cli-dispatch` library automatically:
+- Discovers all non-private functions in the directory
+- Generates help text from `--description` flags
+- Handles subcommand validation and execution
+- Provides consistent error messages
 
 ### Using as Profile Plugin
 
