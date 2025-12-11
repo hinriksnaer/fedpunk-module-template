@@ -1,35 +1,61 @@
 #!/usr/bin/env fish
-# Template module CLI command
+# ============================================================================
+# Module CLI Template - Auto-Discovery Pattern
+# ============================================================================
+# This template demonstrates Fedpunk's auto-discovery CLI pattern.
+# The pattern automatically discovers and routes subcommands with minimal code.
+#
+# Note: cli-dispatch is pre-loaded by fedpunk, so no manual sourcing needed!
+# ============================================================================
 
-# Source CLI dispatch library for auto-discovery
-if not functions -q cli-dispatch
-    source "$FEDPUNK_SYSTEM/lib/fish/cli-dispatch.fish"
-end
+# ============================================================================
+# Main Command Function
+# ============================================================================
+# This function is the entry point for your module's CLI.
+# The --description becomes the help text header.
+#
+# Pattern: cli-auto-dispatch <command-name> $argv
+#   - Automatically finds all functions in this directory
+#   - Generates help text from function descriptions
+#   - Routes commands to the right function
+# ============================================================================
 
 function template --description "Template module commands"
-    set -l cmd_dir (dirname (status --current-filename))
-    cli-dispatch template $cmd_dir $argv
+    cli-auto-dispatch template $argv
 end
 
+# ============================================================================
+# Subcommand Functions
+# ============================================================================
+# Each function becomes a subcommand. The --description appears in help.
+# Implement your logic here - no boilerplate needed!
+# ============================================================================
+
 function show --description "Display the example_value parameter"
+    # Optional: Handle --help for detailed subcommand help
     if contains -- "$argv[1]" --help -h
-        printf "Display the example_value parameter\n"
-        printf "\n"
-        printf "Usage: fedpunk template show\n"
-        printf "\n"
-        printf "Shows the value of the example_value parameter from module params.\n"
+        echo "Display the example_value parameter"
+        echo ""
+        echo "Usage: fedpunk template show"
+        echo ""
+        echo "Shows the value of the example_value parameter from module params."
         return 0
     end
 
-    # Get the example_value parameter
-    # Pattern: FEDPUNK_PARAM_<MODULE>_<PARAM>
-    # Module name comes from module.yaml: name: template -> FEDPUNK_PARAM_TEMPLATE_*
+    # Access module parameters via FEDPUNK_PARAM_<MODULE>_<PARAM>
+    # Example: module.yaml with name: template → FEDPUNK_PARAM_TEMPLATE_*
     if set -q FEDPUNK_PARAM_TEMPLATE_EXAMPLE_VALUE
-        printf "Parameter value: %s\n" $FEDPUNK_PARAM_TEMPLATE_EXAMPLE_VALUE
+        echo "Parameter value: $FEDPUNK_PARAM_TEMPLATE_EXAMPLE_VALUE"
     else
-        printf "Parameter not set. Default: Hello from template module!\n"
+        echo "Parameter not set. Default: Hello from template module!"
     end
 end
 
-# Execute the command
+# ============================================================================
+# Execution
+# ============================================================================
+# Call the main function with all arguments.
+# WISHLIST: This could be automatic if fedpunk loads the command differently.
+# ============================================================================
+
 template $argv

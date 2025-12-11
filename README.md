@@ -118,48 +118,65 @@ ui-spin --title "Loading..." -- command
 
 ###  CLI Auto-Discovery Pattern
 
-Fedpunk modules can provide CLI commands using an auto-discovery pattern:
+Fedpunk modules can provide CLI commands using a simple auto-discovery pattern.
+
+#### The Pattern
 
 ```fish
 #!/usr/bin/env fish
+# cli-dispatch is pre-loaded by fedpunk - no manual sourcing needed!
 
-# Source CLI dispatch library
-if not functions -q cli-dispatch
-    source "$FEDPUNK_SYSTEM/lib/fish/cli-dispatch.fish"
-end
-
-# Main command function
+# Main command - defines the command group
 function mymodule --description "My module commands"
-    set -l cmd_dir (dirname (status --current-filename))
-    cli-dispatch mymodule $cmd_dir $argv
+    cli-auto-dispatch mymodule $argv
 end
 
-# Subcommand functions (automatically discovered)
-function subcommand1 --description "First subcommand"
-    if contains -- "$argv[1]" --help -h
-        printf "Help for subcommand1\\n"
-        return 0
-    end
-    # Implementation...
+# Subcommands - just add functions, they're auto-discovered!
+function init --description "Initialize the module"
+    echo "Initializing mymodule..."
 end
 
-function subcommand2 --description "Second subcommand"
-    if contains -- "$argv[1]" --help -h
-        printf "Help for subcommand2\\n"
-        return 0
-    end
-    # Implementation...
+function status --description "Show module status"
+    echo "Module status: active"
 end
 
-# Execute
+# Execute the command
 mymodule $argv
 ```
 
-The `cli-dispatch` library automatically:
-- Discovers all non-private functions in the directory
-- Generates help text from `--description` flags
-- Handles subcommand validation and execution
-- Provides consistent error messages
+#### How It Works
+
+1. **Main function**: Uses `cli-auto-dispatch` which automatically:
+   - Finds all functions in this directory (subcommands)
+   - Generates help text from `--description` flags
+   - Routes commands to the right function
+
+2. **Subcommands**: Just write functions with `--description` - no boilerplate!
+
+3. **Help is automatic**: Users get consistent help for free:
+   ```bash
+   $ fedpunk mymodule --help
+   My module commands
+
+   Usage: fedpunk mymodule <subcommand> [args...]
+
+   Subcommands:
+     init           Initialize the module
+     status         Show module status
+   ```
+
+4. **Parameter access**: Use environment variables:
+   ```fish
+   if set -q FEDPUNK_PARAM_MYMODULE_CONFIG_PATH
+       echo "Config: $FEDPUNK_PARAM_MYMODULE_CONFIG_PATH"
+   end
+   ```
+
+#### Future Improvements
+
+Potential future enhancements to make the pattern even simpler:
+- **Auto-execute**: Automatically call the main function when the file is sourced, eliminating the need for the `mymodule $argv` line at the bottom
+- **Convention-based routing**: Could potentially infer the command name from the filename to eliminate the parameter to `cli-auto-dispatch`
 
 ### Using as Profile Plugin
 
