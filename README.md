@@ -9,15 +9,25 @@ fedpunk-module-template/
 ├── module.yaml           # Module definition and parameters
 ├── cli/
 │   └── template/
-│       └── template.fish # CLI commands
+│       └── template.fish # CLI commands (auto-discovered, zero boilerplate!)
 ├── config/               # Dotfiles (stowed to $HOME)
 │   └── .config/
 │       └── template/
-│           └── example.conf
+│           └── config.conf # Config file with {{PLACEHOLDER}}
 ├── scripts/              # Lifecycle scripts
-│   └── example-after     # Post-deployment script
+│   └── example-after     # Post-deployment script (replaces placeholders)
 └── README.md
 ```
+
+## How It Works
+
+This template demonstrates the complete Fedpunk module workflow:
+
+1. **Deploy**: `fedpunk profile deploy <profile>` (includes this module)
+2. **Stow Config**: `config.conf` is symlinked to `~/.config/template/`
+3. **Run Lifecycle**: `example-after` script replaces `{{PLACEHOLDER}}` with parameter value
+4. **Use CLI**: `fedpunk template show` reads the config value
+5. **Update**: `fedpunk template update` modifies the config (with gum UI)
 
 ## Parameters
 
@@ -46,11 +56,21 @@ modules:
 ### CLI Commands
 
 ```bash
-# Display the example_value parameter
+# Display current config value
 fedpunk template show
+
+# Update config value interactively (uses gum)
+fedpunk template update
+
+# Update config value directly
+fedpunk template update "New value"
+
+# Get help
+fedpunk template --help
+fedpunk template show --help
 ```
 
-The module uses Fedpunk's auto-discovery CLI pattern, which automatically discovers and lists all available subcommands.
+The module uses Fedpunk's auto-discovery CLI pattern with **zero boilerplate** - just define functions!
 
 ## Creating Your Own Module
 
@@ -120,13 +140,13 @@ ui-spin --title "Loading..." -- command
 
 Fedpunk modules can provide CLI commands using a simple auto-discovery pattern.
 
-#### The Pattern
+#### The Minimal Pattern
 
 ```fish
 #!/usr/bin/env fish
-# cli-dispatch is pre-loaded by fedpunk - no manual sourcing needed!
+# That's it - no imports, no sourcing, cli-dispatch is pre-loaded!
 
-# Main command - defines the command group
+# Main command - one line!
 function mymodule --description "My module commands"
     cli-auto-dispatch mymodule $argv
 end
@@ -140,9 +160,13 @@ function status --description "Show module status"
     echo "Module status: active"
 end
 
-# Execute the command
-mymodule $argv
+# No execution line needed! The fedpunk bin handles it.
 ```
+
+**That's it!** Just 3 simple things:
+1. Main function with one line: `cli-auto-dispatch mymodule $argv`
+2. Subcommand functions with `--description`
+3. No execution line, no imports, no boilerplate
 
 #### How It Works
 
@@ -172,11 +196,13 @@ mymodule $argv
    end
    ```
 
-#### Future Improvements
+#### Real-World Example
 
-Potential future enhancements to make the pattern even simpler:
-- **Auto-execute**: Automatically call the main function when the file is sourced, eliminating the need for the `mymodule $argv` line at the bottom
-- **Convention-based routing**: Could potentially infer the command name from the filename to eliminate the parameter to `cli-auto-dispatch`
+Check out `cli/template/template.fish` in this repo for a complete example showing:
+- Config file reading and writing
+- Interactive updates with gum
+- Error handling and validation
+- Parameter access from lifecycle scripts
 
 ### Using as Profile Plugin
 
