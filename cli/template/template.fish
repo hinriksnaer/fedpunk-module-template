@@ -11,7 +11,7 @@ function template --description "Template module commands"
         printf "Usage: fedpunk template <subcommand> [options]\n"
         printf "\n"
         printf "Subcommands:\n"
-        printf "  test       Display the example_value parameter\n"
+        printf "  show       Display the example_value parameter\n"
         printf "\n"
         printf "Run 'fedpunk template <subcommand> --help' for more information.\n"
         return 0
@@ -29,11 +29,11 @@ function template --description "Template module commands"
     end
 end
 
-function test --description "Display the example_value parameter"
+function show --description "Display the example_value parameter"
     if contains -- "$argv[1]" --help -h
         printf "Display the example_value parameter\n"
         printf "\n"
-        printf "Usage: fedpunk template test\n"
+        printf "Usage: fedpunk template show\n"
         printf "\n"
         printf "Shows the value of the example_value parameter from module params.\n"
         return 0
