@@ -14,7 +14,8 @@ parameters:
 
 lifecycle:
   before: []
-  after: []
+  after:
+    - example-after
 
 packages:
   copr: []    # Optional: COPR repositories to enable
